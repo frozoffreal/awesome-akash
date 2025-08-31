@@ -1,0 +1,69 @@
+---
+version: "2.0"
+services:
+  postgres-backup:
+    image: frozoff/postgres-storj-backup:1.0.2
+    expose:
+      - port: 80
+        as: 80
+        to:
+          - global: true
+    env:
+      - POSTGRES_HOST=postgres-db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - STORJ_ACCESS_KEY=storj-acces-key
+      - STORJ_SECRET_KEY=storj-secret-key
+      - STORJ_ENDPOINT=https://gateway.storjshare.io
+      - STORJ_BUCKET=storj-bucket
+      - BACKUP_INTERVAL_SECONDS=7200
+  postgres-db:
+    image: postgres:15
+    expose:
+      - port: 5432
+        as: 5432
+        to:
+          - global: false
+          - service: postgres-backup
+    env:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+profiles:
+  compute:
+    postgres-backup:
+      resources:
+        cpu:
+          units: 1
+        memory:
+          size: 512Mi
+        storage:
+          - size: 512Mi
+    postgres-db:
+      resources:
+        cpu:
+          units: 1
+        memory:
+          size: 2Gi
+        storage:
+          - size: 10Gi
+  placement:
+    dcloud:
+      pricing:
+        postgres-backup:
+          denom: uakt
+          amount: 5000
+        postgres-db:
+          denom: uakt
+          amount: 10000
+deployment:
+  postgres-backup:
+    dcloud:
+      profile: postgres-backup
+      count: 1
+  postgres-db:
+    dcloud:
+      profile: postgres-db
+      count: 1
