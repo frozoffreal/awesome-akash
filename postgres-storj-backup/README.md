@@ -19,3 +19,6 @@ This deployment consists of two services:
 4. Review bids and accept best offer
 5. Wait for deployment to complete
 6. Open "Logs tab" under service `postgres-backup` to see the backup process
+
+## SHM usage
+SDL with Postgres service with Shared Memory (SHM) enabled can be found [here](https://raw.githubusercontent.com/frozoffreal/awesome-akash/refs/heads/postgres-storj-backup/postgres-storj-backup/deploy-shm.yaml). For more information on SHM class storage, see the [Akash documentation](https://akash.network/docs/getting-started/stack-definition-language/#shared-memory-shm).
